@@ -1,37 +1,49 @@
 import java.util.Scanner;
 
 public class ContadorConsonantes {
-    public static void main(String[] args){
-        // Peticion de consonantes y texto
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Dame 5 consonantes");
+        // Array para almacenar las 5 consonantes/caracteres
+        String[] consonantes = new String[5];
 
-        String consonantes = scanner.nextLine();
+        System.out.println("Introduce 5 consonantes (una a una):");
 
-        System.out.println("Escribe lo que quieras");
+        // Lectura y validación una por una
+        for (int i = 0; i < 5; i++) {
+            String entrada = "";
+            boolean esValida = false;
 
+            while (!esValida) {
+                System.out.print("Consonante " + (i + 1) + ": ");
+                entrada = scanner.nextLine();
+
+                if (entrada.length() == 1 && !entrada.isEmpty()){
+                    esValida = true;
+                } else {
+                    System.out.println("Entrada no válida. Por favor, introduce un único carácter.");
+                }
+
+            }
+
+            consonantes[i] = entrada;
+        }
+
+        System.out.println("Escribe el texto a analizar:");
         String texto = scanner.nextLine();
-
-        //Repeticion del texto
         String textoLargo = texto.repeat(2000);
 
-        System.out.println(textoLargo.length());
+        // Creación del array de hilos
+        Thread[] hilos = new Thread[5];
 
-        //Creacion de array de hilos
-        Thread hilos[] = new Thread[5];
-
-        //Recorremos la lista de hilos extraemos cada letra e intanciamos cada hilo
-        for(int i = 0; i < 5; i++){
-            Runnable tarea = new HiloConsonante(String.valueOf(consonantes.charAt(i)), textoLargo);
-
-            //lanzamos todos los hilos a la vez
-            hilos[i] = new Thread(tarea);
+        for (int i = 0; i < 5; i++) {
+            HiloConsonante hilo = new HiloConsonante(consonantes[i], textoLargo);
+            hilos[i] = new Thread(hilo);
             hilos[i].start();
-
         }
-        //Hacemos que los hilos se ejecuten primero antes que el main
-        for(int i = 0; i < 5; i++){
+
+        // Espera a que finalicen todos los hilos
+        for (int i = 0; i < 5; i++) {
             try {
                 hilos[i].join();
             } catch (InterruptedException e) {
@@ -39,9 +51,8 @@ public class ContadorConsonantes {
             }
         }
 
-        System.out.println("total de repeticiones de consonantes: " + HiloConsonante.contadorTotal);
+
+        System.out.println("Total de apariciones: " + HiloConsonante.getContadorTotal());
 
     }
-
-
 }

@@ -1,13 +1,17 @@
 public class HiloConsonante implements Runnable{
     //Atributos
-    String consonante;
-    String textoLargo;
-    public static int contadorTotal = 0;
+    private String consonante;
+    private String textoLargo;
+    private static int contadorTotal = 0;
 
     //Constructor
     public HiloConsonante(String consonante, String textoLargo) {
         this.consonante = consonante;
         this.textoLargo = textoLargo;
+    }
+
+    public static int getContadorTotal() {
+        return contadorTotal;
     }
 
     //metodo run
@@ -21,15 +25,19 @@ public class HiloConsonante implements Runnable{
 
             if(letraActual == consonante.charAt(0)){
 
-                contadorTotal++;
-
                 miContador++;
 
             }
 
         }
 
+        sumarAlTotal(miContador);
+
         System.out.println("Consonante: " + consonante + " - Apariciones: " + miContador);
 
+    }
+
+    public static synchronized void sumarAlTotal(int cantidad) {
+        contadorTotal += cantidad;
     }
 }
